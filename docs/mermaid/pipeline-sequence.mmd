@@ -1,0 +1,43 @@
+sequenceDiagram
+
+    CloudWatch->>CodePipeline: Run CodePipeline
+
+        CodePipeline->>+CodeCommit: get updated branch
+        CodeCommit->>-CodePipeline: latest branch
+
+        CodePipeline->>CodeBuild: branch
+
+            alt component bucket exist
+                Note right of CodeBuild: Bucket required for CloudFormation
+                CodeBuild->>S3: Sync Repo (/repository)
+            else component bucket not exist
+                CodeBuild->>+S3: make bucket
+                S3->>-CodeBuild: created
+                CodeBuild->>S3: Sync Repo (/repository)
+            end
+
+            alt packages folder exist
+                CodeBuild->>CodeBuild: Handle lambda dependencies
+                CodeBuild->>CodeBuild: Zip lambdas
+            end
+
+            alt webroot folder exist
+                CodeBuild->>CodeBuild: npm install
+                CodeBuild->>CodeBuild: npm build --env=${env}
+
+                alt application bucket exist
+                CodeBuild->>S3: Sync webroot (/)
+                CodeBuild->>S3: Disable cache for webroot (/)
+                end
+            end
+
+            CodeBuild->>+Cloudformation: aws cloudformation package (index.yaml)
+                Cloudformation->>S3: get dependencies
+                    S3->>Cloudformation: dependencies
+                Cloudformation->>-CodeBuild: index-packaged.yaml
+
+            CodeBuild->>CodePipeline: artifacts
+
+        CodePipeline->>Cloudformation: artifacts
+
+        Cloudformation->>Cloudformation: deploy stack
