@@ -3,7 +3,7 @@ Project Soteria has this common "infrastructure" component, with a single instan
 
 It is also home to the "devops" stack, which contains the external dependencies for continuous integration, delivery, and deployment (AWS CodeCommit, CodePipeline, CodeBuild, CodeDeploy). This is instantiated once for each component stack, including this infrastructure component. Think of it as the bootstrap for the rest of the component stacks.
 
-![Animated GIF of Setup Process](https://github.dxc.com/soteria/infrastructure/blob/master/docs/images/soteria-setup.gif?raw=true)
+![Animated GIF of Setup Process](https://github.com/dxc-labs/dxc-soteria-infrastructure/blob/master/docs/images/soteria-setup.gif?raw=true)
 
 ## Utilities
 These scripts assume you have checked out all the component repos into one project directory and are running them in-situ in the infrastructure component:
@@ -31,8 +31,8 @@ These scripts assume you have checked out all the component repos into one proje
 
 ### How do I add a component (e.g. tracing)?
 - create source repo on e.g. GitHub Enterprise
-- clone it to your machine (i.e. `git clone git@github.dxc.com:soteria/component.git`) and `cd` to it
-- copy over files and folders from the skeleton component in [infrastructure/skeleton](https://github.dxc.com/soteria/infrastructure/tree/master/skeleton)
+- clone it to your machine (i.e. `git clone git@github.com:dxc-labs/dxc-soteria-component.git`) and `cd` to it
+- copy over files and folders from the skeleton component in infrastructure/skeleton
 - add component name (e.g. mycomponent) to list in `devops/all.ini` in the infrastructure repo (send PR if required)
 - run `setup.sh -a <component>` to deploy the devops infrastructure "outside" the component
 - create a component CloudFormation stack at `<component>/cloudformation/index.yaml`
